@@ -1,13 +1,10 @@
 package entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Agenda {
     private String agendaOwnerName;
-    private List<Contact> contacts = new ArrayList<>();
+    private Map<String, Contact> contacts = new TreeMap<>();
 
     public Agenda(String agendaOwnerName) {
         this.agendaOwnerName = agendaOwnerName;
@@ -21,44 +18,67 @@ public class Agenda {
         this.agendaOwnerName = agendaOwnerName;
     }
 
-    public List<Contact> getContacts() {
+    public Map<String, Contact> getContacts() {
         return contacts;
     }
 
-    public void addContact(Contact contact){
-        contacts.add(contact);
+    public void addContact(String key, Scanner sc){
+        if(contacts.containsKey(key)){
+            System.out.printf("Contact (%s) already exist!%n", key);
+            System.out.println();
+            return;
+        }
+        System.out.print("Email: ");
+        String contactEmail = sc.next();
+        System.out.print("Phone: ");
+        long contactPhone = sc.nextLong();
+        contacts.put(key, new Contact(key, contactEmail, contactPhone));
+        System.out.printf("Contact (%s) added with success%n", key);
+        System.out.println();
     }
 
-    public void editContact(Contact contact, String contactName, String contactEmail, long contactPhone){
-        if (contacts.contains(contact)){
+    public void editContact(String contactName, Scanner sc){
+        if (contacts.containsKey(contactName)){
+            System.out.print("New Name: ");
+            String editedContactName = sc.next();
+            System.out.print("Email: ");
+            String editedContactEmail = sc.next();
+            System.out.print("Phone: ");
+            long editedContactPhone = sc.nextLong();
+            System.out.println();
             System.out.println("Editing contact...");
-            contact.updateContact(contactName, contactEmail, contactPhone);
-
+            contacts.remove(contactName);
+            contacts.put(editedContactName, new Contact(editedContactName, editedContactEmail, editedContactPhone));
+            return;
         }
-        else{
-            System.out.printf("Contact (%s) not found%n", contact.getContactName());
-        }
+            System.out.printf("Contact (%s) doesn't exist!%n", contactName);
+            System.out.println();
     }
 
-    public void removeContact(Contact contact){
-        contacts.remove(contact);
+    public void removeContact(String contactKey){
+        if(!contacts.containsKey(contactKey)){
+            System.out.println("Contact (%s) doesn't exist!%n");
+            System.out.println();
+            return;
+        }
+        contacts.remove(contactKey);
+        System.out.printf("Removing contact: (%s)...%n", contactKey);
+        System.out.println();
     }
 
     public void printAllContacts(){
-        for (Contact c : contacts){
-            System.out.println(c);
-        }
+        contacts.keySet().stream().map(this::searchContact).forEach(System.out::println);
     }
 
-    public String searchContact(String contactName){
-        for (Contact contact : contacts){
-            if (contact.getContactName().equals(contactName)){
-                return contact.toString();
-            }
-        }
-        return "Contact not found";
 
+    public String searchContact(String contactKey) {
+        if (!contacts.containsKey(contactKey)){
+            return "Contact " + contactKey + " doesn't exist!";
+        }
+        return contacts.get(contactKey).toString();
     }
+
+
 
     public static String menu(){
         return  "Agenda options: \n" +
