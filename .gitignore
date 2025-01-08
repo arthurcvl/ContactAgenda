@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 agenda.iml
 .idea/
+agenda.csv
 
 ### Eclipse ###
 .apt_generated

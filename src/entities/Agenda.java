@@ -1,26 +1,21 @@
 package entities;
 
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Agenda {
-    private String agendaOwnerName;
     private Map<String, Contact> contacts = new TreeMap<>();
 
-    public Agenda(String agendaOwnerName) {
-        this.agendaOwnerName = agendaOwnerName;
+    public Agenda() {
     }
 
-    public String getAgendaOwnerName() {
-        return agendaOwnerName;
-    }
-
-    public void setAgendaOwnerName(String agendaOwnerName) {
-        this.agendaOwnerName = agendaOwnerName;
-    }
 
     public Map<String, Contact> getContacts() {
         return contacts;
     }
+
 
     public void addContact(String key, Scanner sc){
         if(contacts.containsKey(key)){
@@ -57,7 +52,7 @@ public class Agenda {
 
     public void removeContact(String contactKey){
         if(!contacts.containsKey(contactKey)){
-            System.out.println("Contact (%s) doesn't exist!%n");
+            System.out.printf("Contact (%s) doesn't exist!%n", contactKey);
             System.out.println();
             return;
         }
@@ -78,6 +73,42 @@ public class Agenda {
         return contacts.get(contactKey).toString();
     }
 
+    public void importContacts() throws IOException{
+        try {
+            String path = "put/the/a/file/path";
+            File file = new File(path);
+            if (file.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+                    String line = br.readLine();
+                    while (line != null) {
+                        String[] set = line.split(",");
+                        contacts.put(set[0], new Contact(set[0], set[1], Integer.parseInt(set[2])));
+                        line = br.readLine();
+                    }
+                }
+            } else {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            System.out.println("redacted");
+        }
+    }
+
+    public void exportContacts(){
+        String path = "put/the/same/file/path";
+        try(BufferedWriter br = new BufferedWriter(new FileWriter(path))) {
+            if(contacts != null){
+                for(String key :  contacts.keySet()){
+                    Contact contact = contacts.get(key);
+                    br.write(contact.getContactName() + "," + contact.getContactEmail() + "," + contact.getContactPhone() + "\n");
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
     public static String menu(){
@@ -90,7 +121,4 @@ public class Agenda {
                 "Type 0 to close the program";
     }
 
-    public String toString() {
-    return "The owner of this agenda is" + " " + agendaOwnerName;
-    }
 }

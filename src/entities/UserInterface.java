@@ -1,17 +1,20 @@
 package entities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class UserInterface {
 
 
+
     public static Agenda initializeAgenda(Scanner sc){
-        System.out.println("Welcome to this Agenda!\nTo start you will need to tell us your name!\n");
-        System.out.print("Name: ");
-        String agendaOwnerName = sc.nextLine();
+        System.out.println("Welcome to this Agenda!");
         System.out.println();
 
-        return new Agenda(agendaOwnerName);
+        return new Agenda();
     }
 
 
@@ -60,6 +63,7 @@ public class UserInterface {
                 System.out.println();
                 break;
             }
+
             default: {
                 System.out.println();
             }
