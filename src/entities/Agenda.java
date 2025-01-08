@@ -75,14 +75,14 @@ public class Agenda {
 
     public void importContacts() throws IOException{
         try {
-            String path = "put/the/a/file/path";
+            String path = "put/a/file/path";
             File file = new File(path);
             if (file.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(path))) {
                     String line = br.readLine();
                     while (line != null) {
                         String[] set = line.split(",");
-                        contacts.put(set[0], new Contact(set[0], set[1], Integer.parseInt(set[2])));
+                        contacts.put(set[0], new Contact(set[0], set[1], Long.parseLong(set[2])));
                         line = br.readLine();
                     }
                 }
